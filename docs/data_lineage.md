@@ -1,0 +1,68 @@
+# Data Lineage Document
+
+This document traces the flow of data through the Ecommerce Flash Sale Analysis project, from raw synthetic generation to the final analytical aggregates.
+
+## 1. Data Generation Phase
+**Source Script:** `scripts/data_generation.py`
+**Execution Engine:** Apache Spark (Databricks)
+
+### 1.1 Process overview
+The pipeline initiates by synthetically generating 6.5 million records representing e-commerce transactions over the past 90 days. The data is generated entirely in memory across Spark partitions.
+
+### 1.2 Transformations Applied
+- **Base Range Generation:** `spark.range(6500000)` initializes the raw dataset.
+- **Timestamp Computation:** Uses `current_timestamp()` and random offsets to distribute purchases.
+- **Entity Simulation:** Random generation assigns users (`user_id`, 1.5M unique) and products (`product_id`, 50k unique).
+- **Financial Logic:** 
+    - 15% of transactions are flagged as `is_flash_sale = True`.
+    - `discount_rate` is assigned conditionally (40-80% for flash sales, 0-10% otherwise).
+    - `margin_usd` is derived based on a 40% standard markup assumption minus the applied discount.
+- **Network Metadata:** 5% of traffic is artificially routed through a small pool of 100 IPs (`192.168.1.x`) to simulate bot traffic, while the rest are randomized.
+
+### 1.3 Sink Output
+- **Format:** Delta Table
+- **Location:** `dbfs:/tmp/ecommerce_transactions_delta`
+- **Write Mode:** `overwrite`
+
+---
+
+## 2. Ad-Hoc Analysis Phase
+**Source Script:** `scripts/ad_hoc_analysis.py`
+**Execution Engine:** Apache Spark (Databricks)
+
+### 2.1 Source Data
+The analysis reads directly from the Delta table created in Phase 1 (`dbfs:/tmp/ecommerce_transactions_delta`).
+
+### 2.2 Pipeline A: Cohort Profitability Analysis
+This pipeline determines if flash sales erode long-term value.
+- **Step 1 (Windowing):** Partitions by `user_id` and orders by `transaction_timestamp` to find the first transaction per user (`txn_rank == 1`).
+- **Step 2 (Tagging):** Creates an `acquisition_cohorts` table flagging users as `acquired_via_flash_sale` based on their first transaction.
+- **Step 3 (Aggregation):** Computes total lifetime margin and purchase count per `user_id`.
+- **Step 4 (Join & Final Aggregate):** Joins the lifetime aggregates with the acquisition cohorts and groups by cohort to produce:
+    - `user_count`
+    - `avg_purchases_per_user`
+    - `avg_lifetime_margin_usd`
+    - `total_cohort_margin`
+
+### 2.3 Pipeline B: Bot Exploitation Detection
+This pipeline detects rapid transaction velocity indicative of inventory hoarding.
+- **Step 1 (Filtering):** Narrows the dataset exclusively to `is_flash_sale == True`.
+- **Step 2 (Time Windowing):** Creates a rolling 60-second window partitioned by `ip_address` using the UNIX epoch timestamp.
+- **Step 3 (Velocity Calculation):** Computes `txns_in_last_60s` for every transaction.
+- **Step 4 (Anomaly Detection):** Filters for records where velocity > 5 transactions/minute.
+- **Step 5 (Final Aggregate):** Groups by `ip_address` to find the peak velocity, unique accounts used, and total margin impact of the suspicious IP.
+
+## 3. Data Dictionary (Delta Table)
+
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `transaction_id` | String | Unique UUID for the purchase |
+| `transaction_timestamp` | Timestamp | Date and time of the purchase |
+| `user_id` | Integer | Unique identifier for the customer |
+| `product_id` | Integer | Unique identifier for the item |
+| `base_price` | Double | Retail price before discounts |
+| `discount_rate` | Double | Percentage discount applied |
+| `final_price` | Double | Paid price (`base_price` * (1 - `discount_rate`)) |
+| `margin_usd` | Double | Profit/Loss to the company |
+| `is_flash_sale` | Boolean | True if item was purchased during a flash sale |
+| `ip_address` | String | Simulated IPv4 address of the purchaser |

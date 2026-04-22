@@ -64,11 +64,34 @@ def generate_ecommerce_data(spark):
                               F.concat((F.rand() * 255).cast(IntegerType()).cast(StringType()), F.lit("."),
                                        (F.rand() * 255).cast(IntegerType()).cast(StringType()), F.lit(".x.x"))))
 
+    # 5. VoltEdge Electronics Specific Enrichments
+    # Product Category Simulation for VoltEdge Electronics
+    df = df.withColumn("product_category", 
+                       F.when(F.rand() < 0.3, "Gaming Consoles")
+                        .when(F.rand() < 0.5, "GPUs")
+                        .when(F.rand() < 0.8, "Peripherals")
+                        .otherwise("Smartphones"))
+
+    # Account Age: Scalper bots usually use freshly created accounts (age < 2 days)
+    df = df.withColumn("account_age_days",
+                       F.when(F.col("is_suspicious_traffic"), F.round(F.rand() * 2))
+                        .otherwise(F.round(F.rand() * 365)))
+
+    # Payment Method: Bots often use prepaid cards
+    df = df.withColumn("payment_method",
+                       F.when(F.col("is_suspicious_traffic"), "Prepaid Credit Card")
+                        .otherwise(F.when(F.rand() < 0.6, "Credit Card").otherwise("Digital Wallet")))
+
+    # Shipping Speed: Scalpers prefer overnight shipping to secure goods quickly
+    df = df.withColumn("shipping_speed",
+                       F.when(F.col("is_suspicious_traffic"), "Overnight")
+                        .otherwise(F.when(F.rand() < 0.4, "Standard").otherwise("Expedited")))
+
     # Select and reorder columns
     final_df = df.select(
-        "transaction_id", "transaction_timestamp", "user_id", "product_id",
+        "transaction_id", "transaction_timestamp", "user_id", "product_id", "product_category",
         "base_price", "discount_rate", "final_price", "margin_usd",
-        "is_flash_sale", "ip_address"
+        "is_flash_sale", "ip_address", "account_age_days", "payment_method", "shipping_speed"
     )
 
     # Write out as a Delta table (Native to Databricks)

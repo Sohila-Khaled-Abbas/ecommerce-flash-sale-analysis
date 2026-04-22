@@ -1,4 +1,4 @@
-# Ecommerce Flash Sale Analysis & Bot Detection
+# VoltEdge Electronics: Scalper Bot Analytics
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Apache Spark](https://img.shields.io/badge/Apache_Spark-FFFFFF?style=for-the-badge&logo=apachespark&logoColor=#E35A16)
@@ -7,9 +7,15 @@
 ![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)
 
 ## 📌 The Business Problem
-E-commerce companies often rely on heavy discounts (flash sales) to acquire users. The standard assumption is that these users will return and become profitable in the long term. This is frequently false. 
+**VoltEdge Electronics** is a high-end consumer electronics retailer running highly anticipated "Cyber Flash Drops" for next-gen consoles, GPUs, and premium peripherals. While these events generate massive traffic spikes, the standard assumption that these spikes lead to long-term profitable customers is proving false.
 
-This project investigates if recent flash sales are actually attracting **"deal snipers"** (users who buy once at a massive loss to the company and never return) and identifies potential **bot coordination** (multiple rapid transactions from the same IPs attempting to hoard limited-inventory discounted items). Standard KPI dashboards typically fail to catch this, simply showing a spike in volume and active users while masking margin erosion and anomalous transaction velocity.
+VoltEdge is under siege by **Scalper Bots**. These coordinated bots use residential proxy networks to hoard limited-inventory items during flash drops, bypassing "1-per-customer" limits. 
+
+This project is a forensic data engineering investigation to:
+1. Prove that users acquired during "Cyber Flash Drops" (especially for GPUs and Consoles) have a deeply negative lifetime margin.
+2. Detect advanced bot exploitation by correlating transaction velocity with low account ages, prepaid credit card usage, and overnight shipping preferences.
+
+Standard KPI dashboards typically fail to catch this, simply showing a massive win in volume and active users while masking margin erosion and bot infiltration.
 
 ---
 
@@ -19,7 +25,6 @@ Databricks was chosen as the core execution environment for this project for sev
 1. **Distributed Computing for Scale**: The data generation script creates 6.5 million synthetic rows. Single-node Python would be highly inefficient for this scale. Databricks leverages Apache Spark to distribute the workload, generating and processing this data in seconds.
 2. **Delta Lake Integration**: Databricks natively supports Delta Lake, providing ACID transactions, scalable metadata handling, and time travel. This guarantees data reliability during our ad-hoc analysis.
 3. **Advanced Windowing & Analytics**: Our analysis requires complex sliding windows (e.g., detecting transactions within a 60-second rolling window across millions of rows) which Spark SQL handles extremely efficiently compared to Pandas.
-4. **Notebook-Driven Collaboration**: Databricks notebooks allow analysts and engineers to seamlessly collaborate, mix PySpark with markdown, and visualize data on the fly.
 
 ---
 
@@ -34,14 +39,14 @@ Databricks was chosen as the core execution environment for this project for sev
 1. Open your Databricks Workspace and create a new notebook.
 2. Copy the contents of `scripts/data_generation.py` into the notebook.
 3. Attach the notebook to your cluster and run the cells.
-4. The script will generate 6.5 million rows of e-commerce data with simulated flash sales and bot behavior, saving it to a Delta table at `/tmp/ecommerce_transactions_delta`.
+4. The script will generate 6.5 million rows of e-commerce data with simulated flash sales and scalper bot behavior, saving it to a Delta table at `/tmp/ecommerce_transactions_delta`.
 
-### Step 2: Ad-Hoc Analysis
+### Step 2: VoltEdge Analytics
 1. Create a second notebook in your Databricks workspace.
 2. Copy the contents of `scripts/ad_hoc_analysis.py` into the notebook.
 3. Execute the script to perform:
-    - **Cohort Profitability Analysis**: Identifies users acquired via flash sales and calculates their true lifetime margin vs. organic users.
-    - **Bot Exploitation Detection**: Uses a 60-second rolling window to flag IPs with anomalous transaction velocity during flash sales.
+    - **Cohort Profitability Analysis**: Identifies users acquired via flash sales segmented by product category, calculating their true lifetime margin vs. organic users.
+    - **Bot Exploitation Detection**: Uses a 60-second rolling window to flag IPs with anomalous transaction velocity during flash sales, correlating them with account age, payment methods, and shipping preferences to prove malicious intent.
 
 ---
 

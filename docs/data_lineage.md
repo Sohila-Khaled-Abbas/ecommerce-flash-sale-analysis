@@ -1,18 +1,19 @@
 # Data Lineage Document
 
-This document traces the flow of data through the Ecommerce Flash Sale Analysis project, from raw synthetic generation to the final analytical aggregates.
+This document traces the flow of data through the VoltEdge Electronics Scalper Analytics project, from raw synthetic generation to the final analytical aggregates.
 
 ## 1. Data Generation Phase
 **Source Script:** `scripts/data_generation.py`
 **Execution Engine:** Apache Spark (Databricks)
 
 ### 1.1 Process overview
-The pipeline initiates by synthetically generating 6.5 million records representing e-commerce transactions over the past 90 days. The data is generated entirely in memory across Spark partitions.
+The pipeline initiates by synthetically generating 6.5 million records representing e-commerce transactions for VoltEdge Electronics over the past 90 days. The data is generated entirely in memory across Spark partitions.
 
 ### 1.2 Transformations Applied
 - **Base Range Generation:** `spark.range(6500000)` initializes the raw dataset.
 - **Timestamp Computation:** Uses `current_timestamp()` and random offsets to distribute purchases.
 - **Entity Simulation:** Random generation assigns users (`user_id`, 1.5M unique) and products (`product_id`, 50k unique).
+- **VoltEdge Enrichment:** Assigns `product_category` (Gaming Consoles, GPUs, Peripherals, Smartphones), `account_age_days`, `payment_method`, and `shipping_speed`.
 - **Financial Logic:** 
     - 15% of transactions are flagged as `is_flash_sale = True`.
     - `discount_rate` is assigned conditionally (40-80% for flash sales, 0-10% otherwise).
@@ -34,23 +35,19 @@ The pipeline initiates by synthetically generating 6.5 million records represent
 The analysis reads directly from the Delta table created in Phase 1 (`dbfs:/tmp/ecommerce_transactions_delta`).
 
 ### 2.2 Pipeline A: Cohort Profitability Analysis
-This pipeline determines if flash sales erode long-term value.
+This pipeline determines if flash sales erode long-term value based on product categories.
 - **Step 1 (Windowing):** Partitions by `user_id` and orders by `transaction_timestamp` to find the first transaction per user (`txn_rank == 1`).
 - **Step 2 (Tagging):** Creates an `acquisition_cohorts` table flagging users as `acquired_via_flash_sale` based on their first transaction.
 - **Step 3 (Aggregation):** Computes total lifetime margin and purchase count per `user_id`.
-- **Step 4 (Join & Final Aggregate):** Joins the lifetime aggregates with the acquisition cohorts and groups by cohort to produce:
-    - `user_count`
-    - `avg_purchases_per_user`
-    - `avg_lifetime_margin_usd`
-    - `total_cohort_margin`
+- **Step 4 (Join & Final Aggregate):** Joins the lifetime aggregates with the acquisition cohorts and groups by `acquired_via_flash_sale` and `product_category` to produce the final metrics.
 
 ### 2.3 Pipeline B: Bot Exploitation Detection
-This pipeline detects rapid transaction velocity indicative of inventory hoarding.
+This pipeline detects rapid transaction velocity indicative of inventory hoarding by scalper bots.
 - **Step 1 (Filtering):** Narrows the dataset exclusively to `is_flash_sale == True`.
 - **Step 2 (Time Windowing):** Creates a rolling 60-second window partitioned by `ip_address` using the UNIX epoch timestamp.
 - **Step 3 (Velocity Calculation):** Computes `txns_in_last_60s` for every transaction.
 - **Step 4 (Anomaly Detection):** Filters for records where velocity > 5 transactions/minute.
-- **Step 5 (Final Aggregate):** Groups by `ip_address` to find the peak velocity, unique accounts used, and total margin impact of the suspicious IP.
+- **Step 5 (Final Aggregate):** Groups by `ip_address` to find the peak velocity, unique accounts used, average account age, and arrays of shipping/payment methods used by the bot cluster.
 
 ## 3. Data Dictionary (Delta Table)
 
@@ -60,9 +57,13 @@ This pipeline detects rapid transaction velocity indicative of inventory hoardin
 | `transaction_timestamp` | Timestamp | Date and time of the purchase |
 | `user_id` | Integer | Unique identifier for the customer |
 | `product_id` | Integer | Unique identifier for the item |
+| `product_category` | String | Category of the item (e.g., GPUs, Consoles) |
 | `base_price` | Double | Retail price before discounts |
 | `discount_rate` | Double | Percentage discount applied |
 | `final_price` | Double | Paid price (`base_price` * (1 - `discount_rate`)) |
 | `margin_usd` | Double | Profit/Loss to the company |
-| `is_flash_sale` | Boolean | True if item was purchased during a flash sale |
+| `is_flash_sale` | Boolean | True if item was purchased during a Cyber Flash Drop |
 | `ip_address` | String | Simulated IPv4 address of the purchaser |
+| `account_age_days` | Integer | Age of the purchaser's account in days |
+| `payment_method` | String | Payment method used (e.g., Prepaid Credit Card) |
+| `shipping_speed` | String | Selected shipping speed (e.g., Overnight) |

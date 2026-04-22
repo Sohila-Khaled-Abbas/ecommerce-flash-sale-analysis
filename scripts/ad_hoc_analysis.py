@@ -36,15 +36,16 @@ user_ltv = df.groupBy("user_id").agg(
     F.count("transaction_id").alias("total_purchases")
 )
 
-# 4. Join and Aggregate by Cohort
+# 4. Join and Aggregate by Cohort and Product Category
 cohort_analysis = user_ltv.join(acquisition_cohorts, "user_id") \
-    .groupBy("acquired_via_flash_sale") \
+    .join(df.select("user_id", "product_category").distinct(), "user_id") \
+    .groupBy("acquired_via_flash_sale", "product_category") \
     .agg(
         F.count("user_id").alias("user_count"),
         F.avg("total_purchases").alias("avg_purchases_per_user"),
         F.avg("lifetime_margin").alias("avg_lifetime_margin_usd"),
         F.sum("lifetime_margin").alias("total_cohort_margin")
-    ).orderBy("acquired_via_flash_sale")
+    ).orderBy("acquired_via_flash_sale", "product_category")
 
 cohort_analysis.display()
 
@@ -64,12 +65,15 @@ velocity_window = Window.partitionBy("ip_address").orderBy(F.col("transaction_ti
 # 3. Count transactions within that window
 bot_detection = flash_sales_df.withColumn("txns_in_last_60s", F.count("transaction_id").over(velocity_window))
 
-# 4. Filter for anomalous behavior
+# 4. Filter for anomalous behavior and correlate with VoltEdge specific indicators
 anomalous_ips = bot_detection.filter(F.col("txns_in_last_60s") > 5) \
     .groupBy("ip_address") \
     .agg(
         F.max("txns_in_last_60s").alias("peak_txns_per_minute"),
         F.countDistinct("user_id").alias("unique_accounts_used"),
+        F.avg("account_age_days").alias("avg_account_age_days"),
+        F.collect_set("payment_method").alias("payment_methods_used"),
+        F.collect_set("shipping_speed").alias("shipping_speeds_used"),
         F.sum("margin_usd").alias("margin_impact")
     ).orderBy(F.col("peak_txns_per_minute").desc())
 

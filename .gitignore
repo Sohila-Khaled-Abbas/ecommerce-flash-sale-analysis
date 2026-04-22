@@ -47,3 +47,5 @@ _delta_log/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.databricks

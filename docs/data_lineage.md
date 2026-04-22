@@ -49,7 +49,60 @@ This pipeline detects rapid transaction velocity indicative of inventory hoardin
 - **Step 4 (Anomaly Detection):** Filters for records where velocity > 5 transactions/minute.
 - **Step 5 (Final Aggregate):** Groups by `ip_address` to find the peak velocity, unique accounts used, average account age, and arrays of shipping/payment methods used by the bot cluster.
 
-## 3. Data Dictionary (Delta Table)
+---
+
+## 3. Power BI Export Phase
+**Source Script:** `scripts/powerbi_export.py`
+**Execution Engine:** Apache Spark (Databricks)
+
+### 3.1 Process Overview
+This phase materializes three analytics-ready Delta tables optimized for Power BI consumption. It pre-computes expensive window functions and aggregations so that Power BI only needs to visualize, not recalculate.
+
+### 3.2 Tables Produced
+
+#### `fact_transactions`
+The full enriched transaction fact table with derived time-intelligence columns:
+- `transaction_date`, `transaction_hour`, `day_of_week`, `day_name`, `week_number`, `month_name` — enable Power BI time slicers without DAX.
+- `is_margin_negative` — boolean flag for conditional formatting.
+- `discount_tier` — human-readable bucketing (Deep / Heavy / Moderate / Minimal).
+- `account_age_bucket` — New (0-2 days), Recent (3-30), Established (31-90), Veteran (90+).
+
+#### `agg_cohort_profitability`
+Pre-aggregated cohort × product category margin analysis including:
+- `avg_lifetime_margin_usd`, `total_cohort_margin`, `median_lifetime_margin`
+- `avg_days_active`, `avg_categories_purchased`
+
+#### `agg_bot_detection`
+Flattened anomalous IP forensic report (no nested array types for Power BI compatibility):
+- `peak_txns_per_minute`, `unique_accounts_used`, `avg_account_age_days`
+- `margin_impact_usd`, `total_revenue_captured`
+- `payment_methods` and `shipping_speeds` as comma-separated strings.
+
+### 3.3 Sink Output
+- **Format:** Delta Tables
+- **Location:** `dbfs:/tmp/voltedge_powerbi_exports/{table_name}`
+- **Write Mode:** `overwrite`
+
+---
+
+## 4. Visualization Phase
+**Tool:** Microsoft Power BI
+**Design Spec:** `docs/powerbi_dashboard_design.md`
+
+### 4.1 Dashboard Pages
+| Page | Purpose |
+| :--- | :--- |
+| Executive Overview | High-level KPIs: revenue, margin, loss transaction rate |
+| Cohort Deep-Dive | Flash sale vs organic LTV comparison by product category |
+| Bot War Room | IP-level forensic analysis with velocity and account age indicators |
+| Time Intelligence | Temporal patterns: hourly, daily, and weekly transaction heatmaps |
+
+### 4.2 Data Connection
+Power BI connects to the materialized Delta tables via Databricks Partner Connect (recommended), ODBC/JDBC, or exported CSV files.
+
+---
+
+## 5. Data Dictionary (Delta Table)
 
 | Column Name | Data Type | Description |
 | :--- | :--- | :--- |

@@ -1,13 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600">
-    <!-- Definitions for Gradients and Shadows -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680">
     <defs>
-        <!-- Background Gradient -->
         <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#09090b" />
             <stop offset="100%" stop-color="#18181b" />
         </linearGradient>
 
-        <!-- Node Gradients -->
         <linearGradient id="grad-gen" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#8b5cf6" />
             <stop offset="100%" stop-color="#6d28d9" />
@@ -23,7 +20,11 @@
             <stop offset="100%" stop-color="#059669" />
         </linearGradient>
 
-        <!-- Drop Shadow -->
+        <linearGradient id="grad-powerbi" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f59e0b" />
+            <stop offset="100%" stop-color="#d97706" />
+        </linearGradient>
+
         <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
             <feDropShadow dx="2" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.6"/>
         </filter>
@@ -42,81 +43,134 @@
     <rect width="100%" height="100%" fill="url(#bg-grad)" rx="15" ry="15" />
 
     <!-- Title -->
-    <text x="500" y="60" font-family="'Inter', 'Segoe UI', sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle" filter="url(#glow)">VoltEdge Electronics: Scalper Detection Pipeline</text>
-    <text x="500" y="90" font-family="'Inter', 'Segoe UI', sans-serif" font-size="16" font-weight="400" fill="#a1a1aa" text-anchor="middle">End-to-end Data Pipeline &amp; Analytics Workflow</text>
+    <text x="600" y="55" font-family="'Inter', 'Segoe UI', sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle" filter="url(#glow)">VoltEdge Electronics: End-to-End Analytics Pipeline</text>
+    <text x="600" y="85" font-family="'Inter', 'Segoe UI', sans-serif" font-size="15" font-weight="400" fill="#a1a1aa" text-anchor="middle">Data Generation → Delta Lake → Forensic Analysis → Power BI Dashboards</text>
+
+    <!-- Phase Labels -->
+    <text x="155" y="155" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#71717a" text-anchor="middle" letter-spacing="2">PHASE 1</text>
+    <text x="430" y="155" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#71717a" text-anchor="middle" letter-spacing="2">STORAGE</text>
+    <text x="720" y="155" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#71717a" text-anchor="middle" letter-spacing="2">PHASE 2</text>
+    <text x="1010" y="155" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#71717a" text-anchor="middle" letter-spacing="2">PHASE 3</text>
 
     <!-- Block 1: Data Generation -->
-    <g transform="translate(80, 200)">
-        <rect width="220" height="240" rx="12" fill="#27272a" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)" />
-        <rect x="0" y="0" width="220" height="60" fill="url(#grad-gen)" rx="12" />
-        <!-- Hide bottom corners of header -->
-        <rect x="0" y="40" width="220" height="20" fill="url(#grad-gen)" />
-        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Data Generation</text>
+    <g transform="translate(45, 175)">
+        <rect width="220" height="280" rx="12" fill="#27272a" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="55" fill="url(#grad-gen)" rx="12" />
+        <rect x="0" y="38" width="220" height="17" fill="url(#grad-gen)" />
+        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Data Generation</text>
         
-        <text x="20" y="95" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#f4f4f5">Synthetic Pipeline</text>
-        <circle cx="30" cy="125" r="4" fill="#8b5cf6" />
-        <text x="45" y="130" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">PySpark Distributed</text>
-        <circle cx="30" cy="155" r="4" fill="#8b5cf6" />
-        <text x="45" y="160" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Data Enrichment</text>
-        <circle cx="30" cy="185" r="4" fill="#8b5cf6" />
-        <text x="45" y="190" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Bot Traffic Simulation</text>
-        
-        <rect x="20" y="210" width="180" height="2" fill="#3f3f46" />
+        <text x="20" y="85" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#f4f4f5">Synthetic Pipeline</text>
+        <circle cx="28" cy="110" r="3.5" fill="#8b5cf6" />
+        <text x="40" y="114" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">PySpark Distributed</text>
+        <circle cx="28" cy="136" r="3.5" fill="#8b5cf6" />
+        <text x="40" y="140" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">6.5M Row Generation</text>
+        <circle cx="28" cy="162" r="3.5" fill="#8b5cf6" />
+        <text x="40" y="166" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Bot Traffic Injection</text>
+        <circle cx="28" cy="188" r="3.5" fill="#8b5cf6" />
+        <text x="40" y="192" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">VoltEdge Enrichment</text>
+
+        <rect x="18" y="210" width="184" height="1" fill="#3f3f46" />
+        <text x="110" y="235" font-family="'Inter', sans-serif" font-size="11" fill="#71717a" text-anchor="middle">data_generation.py</text>
+        <rect x="30" y="245" width="160" height="22" rx="4" fill="#3f3f46" />
+        <text x="110" y="260" font-family="'Inter', sans-serif" font-size="10" fill="#a1a1aa" text-anchor="middle">14 Enriched Columns</text>
     </g>
 
     <!-- Arrow 1 -->
-    <path d="M 310 320 L 380 320" stroke="#71717a" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="6,4"/>
+    <path d="M 275 315 L 310 315" stroke="#71717a" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
 
     <!-- Block 2: Storage Layer -->
-    <g transform="translate(390, 200)">
-        <rect width="220" height="240" rx="12" fill="#27272a" stroke="#0ea5e9" stroke-width="2" filter="url(#shadow)" />
-        <rect x="0" y="0" width="220" height="60" fill="url(#grad-storage)" rx="12" />
-        <rect x="0" y="40" width="220" height="20" fill="url(#grad-storage)" />
-        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Storage Layer</text>
+    <g transform="translate(320, 175)">
+        <rect width="220" height="280" rx="12" fill="#27272a" stroke="#0ea5e9" stroke-width="2" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="55" fill="url(#grad-storage)" rx="12" />
+        <rect x="0" y="38" width="220" height="17" fill="url(#grad-storage)" />
+        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Delta Lake</text>
 
-        <text x="20" y="95" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#f4f4f5">Delta Lake</text>
+        <text x="20" y="85" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#f4f4f5">Lakehouse Storage</text>
         
-        <!-- Cylinder SVG representing DB/Delta Table -->
-        <g transform="translate(85, 120)">
+        <!-- Cylinder -->
+        <g transform="translate(85, 110)">
             <ellipse cx="25" cy="0" rx="25" ry="10" fill="#38bdf8" />
-            <rect x="0" y="0" width="50" height="40" fill="#0ea5e9" />
-            <ellipse cx="25" cy="40" rx="25" ry="10" fill="#0284c7" />
+            <rect x="0" y="0" width="50" height="35" fill="#0ea5e9" />
+            <ellipse cx="25" cy="35" rx="25" ry="10" fill="#0284c7" />
         </g>
         
-        <text x="110" y="200" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8" text-anchor="middle">6.5M+ Records</text>
-        <text x="110" y="220" font-family="'Inter', sans-serif" font-size="12" fill="#a1a1aa" text-anchor="middle">ACID Transactions</text>
+        <text x="110" y="180" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8" text-anchor="middle">6.5M+ Records</text>
+        <text x="110" y="198" font-family="'Inter', sans-serif" font-size="11" fill="#a1a1aa" text-anchor="middle">ACID · Time Travel</text>
+
+        <rect x="18" y="210" width="184" height="1" fill="#3f3f46" />
+        <rect x="30" y="225" width="160" height="22" rx="4" fill="#3f3f46" />
+        <text x="110" y="240" font-family="'Inter', sans-serif" font-size="10" fill="#a1a1aa" text-anchor="middle">dbfs:/tmp/ecommerce_*</text>
+        <rect x="30" y="255" width="160" height="22" rx="4" fill="#3f3f46" />
+        <text x="110" y="270" font-family="'Inter', sans-serif" font-size="10" fill="#a1a1aa" text-anchor="middle">Parquet + Transaction Log</text>
     </g>
 
     <!-- Arrow 2 -->
-    <path d="M 620 320 L 690 320" stroke="#71717a" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="6,4"/>
+    <path d="M 550 315 L 600 315" stroke="#71717a" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
 
-    <!-- Block 3: Ad-Hoc Analysis -->
-    <g transform="translate(700, 200)">
-        <rect width="220" height="240" rx="12" fill="#27272a" stroke="#10b981" stroke-width="2" filter="url(#shadow)" />
-        <rect x="0" y="0" width="220" height="60" fill="url(#grad-analysis)" rx="12" />
-        <rect x="0" y="40" width="220" height="20" fill="url(#grad-analysis)" />
-        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">VoltEdge Analytics</text>
+    <!-- Block 3: Forensic Analysis -->
+    <g transform="translate(610, 175)">
+        <rect width="220" height="280" rx="12" fill="#27272a" stroke="#10b981" stroke-width="2" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="55" fill="url(#grad-analysis)" rx="12" />
+        <rect x="0" y="38" width="220" height="17" fill="url(#grad-analysis)" />
+        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Forensic Analysis</text>
 
-        <text x="20" y="95" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#f4f4f5">Spark SQL Engine</text>
-        <circle cx="30" cy="125" r="4" fill="#10b981" />
-        <text x="45" y="130" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Cohort LTV Analysis</text>
-        <circle cx="30" cy="155" r="4" fill="#10b981" />
-        <text x="45" y="160" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">60s Rolling Windows</text>
-        <circle cx="30" cy="185" r="4" fill="#10b981" />
-        <text x="45" y="190" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Scalper Anomaly Detection</text>
+        <text x="20" y="85" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#f4f4f5">Spark SQL Engine</text>
+        <circle cx="28" cy="110" r="3.5" fill="#10b981" />
+        <text x="40" y="114" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Cohort LTV Analysis</text>
+        <circle cx="28" cy="136" r="3.5" fill="#10b981" />
+        <text x="40" y="140" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">60s Rolling Windows</text>
+        <circle cx="28" cy="162" r="3.5" fill="#10b981" />
+        <text x="40" y="166" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Scalper Detection</text>
+        <circle cx="28" cy="188" r="3.5" fill="#10b981" />
+        <text x="40" y="192" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Margin Erosion Calc</text>
 
-        <rect x="20" y="210" width="180" height="2" fill="#3f3f46" />
+        <rect x="18" y="210" width="184" height="1" fill="#3f3f46" />
+        <text x="110" y="235" font-family="'Inter', sans-serif" font-size="11" fill="#71717a" text-anchor="middle">ad_hoc_analysis.py</text>
+        <rect x="30" y="245" width="160" height="22" rx="4" fill="#3f3f46" />
+        <text x="110" y="260" font-family="'Inter', sans-serif" font-size="10" fill="#a1a1aa" text-anchor="middle">Window + Aggregate</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <path d="M 840 315 L 890 315" stroke="#71717a" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
+
+    <!-- Block 4: Power BI -->
+    <g transform="translate(900, 175)">
+        <rect width="220" height="280" rx="12" fill="#27272a" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="55" fill="url(#grad-powerbi)" rx="12" />
+        <rect x="0" y="38" width="220" height="17" fill="url(#grad-powerbi)" />
+        <text x="110" y="35" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Power BI</text>
+
+        <text x="20" y="85" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#f4f4f5">Visualization Layer</text>
+        <circle cx="28" cy="110" r="3.5" fill="#f59e0b" />
+        <text x="40" y="114" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Executive Overview</text>
+        <circle cx="28" cy="136" r="3.5" fill="#f59e0b" />
+        <text x="40" y="140" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Cohort Deep-Dive</text>
+        <circle cx="28" cy="162" r="3.5" fill="#f59e0b" />
+        <text x="40" y="166" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Bot War Room</text>
+        <circle cx="28" cy="188" r="3.5" fill="#f59e0b" />
+        <text x="40" y="192" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Time Intelligence</text>
+
+        <rect x="18" y="210" width="184" height="1" fill="#3f3f46" />
+        <text x="110" y="235" font-family="'Inter', sans-serif" font-size="11" fill="#71717a" text-anchor="middle">powerbi_export.py</text>
+        <rect x="30" y="245" width="160" height="22" rx="4" fill="#3f3f46" />
+        <text x="110" y="260" font-family="'Inter', sans-serif" font-size="10" fill="#a1a1aa" text-anchor="middle">3 Materialized Tables</text>
     </g>
 
     <!-- Legend/Footer -->
-    <rect x="300" y="500" width="400" height="50" rx="8" fill="#27272a" fill-opacity="0.9" stroke="#3f3f46" />
-    <circle cx="350" cy="525" r="6" fill="#8b5cf6" />
-    <text x="365" y="530" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Compute</text>
+    <rect x="320" y="520" width="560" height="50" rx="8" fill="#27272a" fill-opacity="0.9" stroke="#3f3f46" />
+    <circle cx="370" cy="545" r="6" fill="#8b5cf6" />
+    <text x="383" y="550" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Compute</text>
     
-    <circle cx="470" cy="525" r="6" fill="#0ea5e9" />
-    <text x="485" y="530" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Storage</text>
+    <circle cx="480" cy="545" r="6" fill="#0ea5e9" />
+    <text x="493" y="550" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Storage</text>
     
-    <circle cx="580" cy="525" r="6" fill="#10b981" />
-    <text x="595" y="530" font-family="'Inter', sans-serif" font-size="13" fill="#d4d4d8">Analytics</text>
+    <circle cx="580" cy="545" r="6" fill="#10b981" />
+    <text x="593" y="550" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Analytics</text>
+
+    <circle cx="690" cy="545" r="6" fill="#f59e0b" />
+    <text x="703" y="550" font-family="'Inter', sans-serif" font-size="12" fill="#d4d4d8">Visualization</text>
+
+    <!-- Footer Credit -->
+    <text x="600" y="640" font-family="'Inter', sans-serif" font-size="11" fill="#52525b" text-anchor="middle">VoltEdge Electronics · Scalper Bot Analytics · Sohila Khaled</text>
 
 </svg>

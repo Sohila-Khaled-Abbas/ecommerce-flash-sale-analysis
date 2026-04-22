@@ -2,6 +2,10 @@
 
   <img src="https://img.shields.io/badge/⚡-VoltEdge_Electronics-8b5cf6?style=for-the-badge&labelColor=1e1b4b" alt="VoltEdge" />
 
+  <br/>
+
+  <img src="https://img.shields.io/badge/Project_Type-End--to--End_Analytics_Engineering-10b981?style=flat-square" alt="Project Type" />
+
   <h1>Scalper Bot Analytics & Flash Sale Cannibalization</h1>
   <p><em>A forensic data engineering investigation into how "Cyber Flash Drops" are silently destroying profit margins through deal-sniper users and coordinated bot exploitation.</em></p>
 
@@ -11,6 +15,7 @@
     <a href="https://delta.io/"><img src="https://img.shields.io/badge/Delta_Lake-003366?style=for-the-badge&logo=delta&logoColor=white" alt="Delta Lake" /></a>
     <a href="https://python.org/"><img src="https://img.shields.io/badge/Python_3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" /></a>
     <a href="https://pyspark.apache.org/"><img src="https://img.shields.io/badge/PySpark-FDB515?style=for-the-badge&logo=apachespark&logoColor=black" alt="PySpark" /></a>
+    <a href="https://powerbi.microsoft.com/"><img src="https://img.shields.io/badge/Power_BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI" /></a>
   </p>
 
   <p>
@@ -60,9 +65,9 @@ A small cluster of IP addresses generates abnormally high transaction velocity d
 ## 🏗 System Architecture
 
 <div align="center">
-  <img src="./docs/architecture.png" alt="VoltEdge Scalper Detection Pipeline Architecture" width="100%">
+  <img src="./docs/architecture.png" alt="VoltEdge End-to-End Analytics Pipeline" width="100%">
   <br/>
-  <em>End-to-end pipeline: Distributed data synthesis → Delta Lake storage → Forensic Spark SQL analytics</em>
+  <em>End-to-end pipeline: Data Generation → Delta Lake → Forensic Analysis → Power BI Dashboards</em>
 </div>
 
 ---
@@ -172,6 +177,30 @@ The synthetic dataset simulates 90 days of VoltEdge transaction history with del
 
 </details>
 
+### Phase 3: Power BI Visualization
+
+> Materializes analytics-ready tables and connects to a 4-page Power BI dashboard.
+
+<details>
+<summary><strong>📋 Step-by-step instructions</strong></summary>
+<br/>
+
+1. Create a **third notebook** in your workspace.
+2. Copy the contents of [`scripts/powerbi_export.py`](scripts/powerbi_export.py).
+3. Run to materialize three optimized Delta tables:
+
+| Export Table | Contents | Rows |
+| :--- | :--- | :---: |
+| `fact_transactions` | Full enriched fact table with time-intelligence columns, discount tiers, and account age buckets | 6.5M |
+| `agg_cohort_profitability` | Pre-aggregated cohort × category margin analysis with median LTV | ~8 |
+| `agg_bot_detection` | Flattened anomalous IP forensic report (Power BI-compatible, no nested types) | Variable |
+
+4. Connect Power BI via **Databricks Partner Connect**, **ODBC/JDBC**, or **CSV export**.
+5. Import the [VoltEdge_Dark.json](dashboards/VoltEdge_Dark.json) theme via **View → Themes → Browse for themes**.
+6. Build the 4 dashboard pages as specified in [`docs/powerbi_dashboard_design.md`](docs/powerbi_dashboard_design.md).
+
+</details>
+
 ---
 
 ## 📂 Repository Structure
@@ -179,18 +208,23 @@ The synthetic dataset simulates 90 days of VoltEdge transaction history with del
 ```
 ecommerce-flash-sale-analysis/
 │
+├── 📁 dashboards/
+│   └── VoltEdge_Dark.json            # Power BI custom color theme
+│
 ├── 📁 docs/
-│   ├── architecture.png          # Pipeline diagram (high-quality PNG)
-│   ├── architecture.svg          # Pipeline diagram (scalable vector)
-│   └── data_lineage.md           # Full data lineage & transformation docs
+│   ├── architecture.png              # Pipeline diagram (high-quality PNG)
+│   ├── architecture.svg              # Pipeline diagram (scalable vector)
+│   ├── data_lineage.md               # Full data lineage & transformation docs
+│   └── powerbi_dashboard_design.md   # Dashboard data model, DAX & page specs
 │
 ├── 📁 scripts/
-│   ├── data_generation.py        # PySpark distributed data synthesizer
-│   └── ad_hoc_analysis.py        # Forensic cohort & bot analytics
+│   ├── data_generation.py            # Phase 1: PySpark distributed data synthesizer
+│   ├── ad_hoc_analysis.py            # Phase 2: Forensic cohort & bot analytics
+│   └── powerbi_export.py             # Phase 3: Materialized tables for Power BI
 │
-├── .gitignore                    # Python / Spark / Delta exclusions
-├── LICENSE                       # MIT License
-└── README.md                     # This file
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
@@ -198,6 +232,7 @@ ecommerce-flash-sale-analysis/
 ## 🔗 Further Reading
 
 - [Data Lineage Documentation](docs/data_lineage.md) — Full schema, transformation logic, and data dictionary.
+- [Power BI Dashboard Design](docs/powerbi_dashboard_design.md) — Data model, DAX measures, page layouts, and color theme.
 - [Architecture Diagram (SVG)](docs/architecture.svg) — Scalable vector version of the pipeline diagram.
 
 ---

@@ -129,6 +129,9 @@ The synthetic dataset simulates 90 days of VoltEdge transaction history with del
 
 ---
 
+> [!NOTE]
+> **Source reproducibility:** This project uses synthetic simulation data. Its committed Python `.venv/` directory was a local Windows environment rather than a portable dependency artifact. Create your own environment as needed; the tracked environment files are removed in this maintenance change. Spark and Databricks dependencies must be installed using versions compatible with your Databricks Runtime; this repository does not include a locked, cross-platform Python dependency manifest.
+
 ## 🚀 Quick Start Guide
 
 ### Prerequisites
